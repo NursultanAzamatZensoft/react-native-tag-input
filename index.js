@@ -38,58 +38,63 @@ type RequiredProps<T> = {
    * item type before passing this value on to the "value" prop, or otherwise
    * make sure your labelExtractor can handle both your item type and strings.
    */
-  onChange: (items: $ReadOnlyArray<T | string>) => void,
+    onChange: (items: $ReadOnlyArray<T | string>) => void,
   /**
    * An array of tags, which can be any type, as long as labelExtractor below
    * can extract a string from it.
    */
-  value: $ReadOnlyArray<T>,
+    value: $ReadOnlyArray<T>,
   /**
    * Function to extract string value for label from item
    */
-  labelExtractor: (tagData: T) => string,
+    labelExtractor: (tagData: T) => string,
 };
 type OptionalProps = {
   /**
    * An array of characters to use as tag separators
    */
-  separators: $ReadOnlyArray<string>,
+    separators: $ReadOnlyArray<string>,
   /**
    * A RegExp to test tags after enter, space, or a comma is pressed
    */
-  regex: RegExp,
+    regex: RegExp,
   /**
    * Background color of tags
    */
-  tagColor: string,
+    tagColor: string,
   /**
    * Text color of tags
    */
-  tagTextColor: string,
+    tagTextColor: string,
   /**
    * Styling override for container surrounding tag text
    */
-  tagContainerStyle?: StyleObj,
+    tagContainerStyle?: StyleObj,
   /**
    * Styling override for tag's text component
    */
-  tagTextStyle?: StyleObj,
+    tagTextStyle?: StyleObj,
   /**
    * Color of text input
    */
-  inputColor: string,
+    inputColor: string,
   /**
    * Any misc. TextInput props (autofocus, placeholder, returnKeyType, etc.)
    */
-  inputProps?: $PropertyType<TextInput, 'props'>,
+    inputProps?: $PropertyType<TextInput, 'props'>,
   /**
    * Maximum number of lines of the tag input
    */
-  numberOfLines: number,
+    numberOfLines: number,
   /**
    * whether to treat a blur event as a separator entry (iOS-only)
    */
-  parseOnBlur: bool,
+    parseOnBlur: bool,
+
+  /**
+   * if text was changed
+   */
+    onChangeText: (text) => void
 };
 type Props<T> = RequiredProps<T> & OptionalProps;
 type State = {
@@ -118,19 +123,19 @@ class TagInput<T> extends React.PureComponent<OptionalProps, Props<T>, State> {
     numberOfLines: PropTypes.number,
     parseOnBlur: PropTypes.bool,
   };
-  props: Props<T>;
-  state: State = {
-    text: '',
-    inputWidth: null,
-    lines: 1,
-  };
-  wrapperWidth = windowWidth;
+         props: Props<T>;
+         state: State = {
+           text: '',
+           inputWidth: null,
+           lines: 1,
+         };
+         wrapperWidth = windowWidth;
   // scroll to bottom
-  contentHeight = 0;
-  scrollViewHeight = 0;
+         contentHeight = 0;
+         scrollViewHeight = 0;
   // refs
-  tagInput: ?TextInput = null;
-  scrollView: ?ScrollView = null;
+         tagInput: ?TextInput = null;
+         scrollView: ?ScrollView = null;
 
   static defaultProps = {
     separators: DEFAULT_SEPARATORS,
@@ -156,6 +161,8 @@ class TagInput<T> extends React.PureComponent<OptionalProps, Props<T>, State> {
     if (parseWhen.indexOf(lastTyped) > -1) {
       this.parseTags();
     }
+
+    this.props.onChangeText && this.props.onChangeText(text)
   }
 
   onBlur = (event: { nativeEvent: { text: string } }) => {
@@ -246,7 +253,7 @@ class TagInput<T> extends React.PureComponent<OptionalProps, Props<T>, State> {
         style={styles.container}
         onLayout={this.measureWrapper}
       >
-        <View style={[styles.wrapper, { height: wrapperHeight }]}>
+        <View style={[styles.wrapper, { height: 80 }]}>
           <ScrollView
             ref={this.scrollViewRef}
             style={styles.tagInputContainerScroll}
@@ -269,6 +276,7 @@ class TagInput<T> extends React.PureComponent<OptionalProps, Props<T>, State> {
                     width: width,
                     color: inputColor,
                   }]}
+                  placeholder="Search by #hashtags"
                   onBlur={this.onBlur}
                   onChangeText={this.onChangeText}
                   onSubmitEditing={this.parseTags}

@@ -276,7 +276,6 @@ class TagInput<T> extends React.PureComponent<OptionalProps, Props<T>, State> {
                     width: width,
                     color: inputColor,
                   }]}
-                  placeholder="Search by #hashtags"
                   onBlur={this.onBlur}
                   onChangeText={this.onChangeText}
                   onSubmitEditing={this.parseTags}
